@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Płatność przez Stripe</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="payment.js"></script>
+  </head>
+  <body>
+    <h1>Płatność przez Stripe</h1>
+    <button id="checkout-button">Poznaj wynik</button>
+    <div id="result" style="display: none">
+      <h2>Twoja losowa liczba: <span id="random-number"></span></h2>
+    </div>
+
+    <script>
+      const stripe = Stripe(
+        "pk_live_51NPw15Hz2zbwL7ySoRl128hP1ibdHajn53OyNIhbC8zmZ6Ts7IdAyhYm2gkYaoicxIcWV9FCDxKEJqIwuVZv3gBw00ywmUk7pO"
+      );
+      const button = document.getElementById("checkout-button");
+      const resultDiv = document.getElementById("result");
+      const randomNumberSpan = document.getElementById("random-number");
+
+      button.addEventListener("click", async () => {
+        const response = await fetch("/create-session", {
+          method: "POST",
+        });
+
+        const session = await response.json();
+        const result = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+
+        if (result.error) {
+          console.error(result.error.message);
+        }
+      });
+
+      // Funkcja do generowania losowej liczby
+      function generateRandomNumber() {
+        return Math.floor(Math.random() * 101); // Losowa liczba od 0 do 100
+      }
+
+      // Pobranie i wyświetlenie losowej liczby po płatności
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("success")) {
+        const randomNum = generateRandomNumber();
+        randomNumberSpan.textContent = randomNum;
+        resultDiv.style.display = "block";
+      }
+    </script>
+  </body>
+</html>
