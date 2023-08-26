@@ -5,6 +5,7 @@
   </head>
   <body>
     <button id="paymentButton">Poznaj wynik</button>
+    <p id="randomNumberDisplay"></p>
 
     <script>
       document
@@ -16,9 +17,9 @@
           );
         });
 
-      function showRandomNumber() {
-        var randomNumber = Math.floor(Math.random() * 101); // Losowa liczba od 0 do 100
-        alert("Wylosowana liczba: " + randomNumber);
+      function showRandomNumber(randomNumber) {
+        var randomNumberDisplay = document.getElementById("randomNumberDisplay");
+        randomNumberDisplay.textContent = "Wylosowana liczba: " + randomNumber;
       }
     </script>
   </body>
